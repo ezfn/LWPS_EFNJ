@@ -19,7 +19,6 @@ import com.google.android.gcm.GCMRegistrar;
 
 public class MainActivity extends Activity {
 
-	String moodRingProjectNumber = "1089929367341";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -115,7 +114,7 @@ public class MainActivity extends Activity {
 					final String regId = GCMRegistrar.getRegistrationId(MainActivity.this);
 
 					if (regId.equals("")) {
-						GCMRegistrar.register(MainActivity.this, moodRingProjectNumber);
+						GCMRegistrar.register(MainActivity.this, Constants.moodRingProjectNumber);
 					} else {
 						Toast.makeText(MainActivity.this, "Already registered!", Toast.LENGTH_SHORT).show();
 					}
