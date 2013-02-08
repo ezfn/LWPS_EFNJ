@@ -9,4 +9,9 @@ public class Constants {
 	public static final String GCM_ID = "gcm_id";
 	public static final String BODY = "body";
 	public static final String DATE_REGISTERED = "date_reg";
+	public static final String DATE_POSTED = "date_posted";
+	public static final String FROM = "from";
+	public static final String TO = "to";
+	
+	
 }

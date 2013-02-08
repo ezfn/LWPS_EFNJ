@@ -72,8 +72,9 @@ public class SendMessageServlet extends HttpServlet {
 					}
 					Entity newMessage = null;
 					newMessage = new Entity(Constants.BODY, body);
-					newMessage.setProperty("gcm_id", "asfdgfadsgadsfadesfadsfads");
-					newMessage.setProperty("registrationDate", new Date());
+					newMessage.setProperty(Constants.FROM, from);
+					newMessage.setProperty(Constants.TO, to);
+					newMessage.setProperty(Constants.DATE_REGISTERED, new Date());
 					datastore.put(newMessage);
 
 				} else {
