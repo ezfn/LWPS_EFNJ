@@ -42,7 +42,7 @@ public class MainActivity extends Activity {
 
 	private void showStandardUi() {
 		findViewById(R.id.registration_layout).setVisibility(View.GONE);
-		findViewById(R.id.work_layout).setVisibility(View.VISIBLE);
+		findViewById(R.id.userlist_layout).setVisibility(View.VISIBLE);
 
 		Runnable runnable = new Runnable() {
 
