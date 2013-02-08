@@ -1,6 +1,7 @@
 package com.medialab.moodring.server;
 
 import java.io.IOException;
+import java.util.Date;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -69,6 +70,12 @@ public class SendMessageServlet extends HttpServlet {
 							}
 						}
 					}
+					Entity newMessage = null;
+					newMessage = new Entity(Constants.BODY, body);
+					newMessage.setProperty("gcm_id", "asfdgfadsgadsfadesfadsfads");
+					newMessage.setProperty("registrationDate", new Date());
+					datastore.put(newMessage);
+
 				} else {
 					error = "User not found";
 				}

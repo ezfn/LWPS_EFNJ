@@ -24,7 +24,8 @@ public class GetUsersServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		DatastoreService datastore = DatastoreServiceFactory.getDatastoreService();
 
-		String userId = "Erez";
+		/*DUBUG CODE:
+		/*String userId = "Erez";
 		Key key = KeyFactory.createKey(Constants.USER, userId);
 		Entity newUser = null;
 		try {
@@ -38,9 +39,10 @@ public class GetUsersServlet extends HttpServlet {
 		} else {
 		}
 
-		newUser.setProperty("gcm_id", "asfdgfadsgadsfadesfadsfads");
-		newUser.setProperty("registrationDate", new Date());
-		Key retrievedKey = datastore.put(newUser);
+		newUser.setProperty(Constants.GCM_ID, "asfdgfadsgadsfadesfadsfads");
+		newUser.setProperty(Constants.DATE_REGISTERED, new Date());*/
+		
+		//Key retrievedKey = datastore.put(newUser);
 
 		Query q = new Query(Constants.USER);
 		PreparedQuery preparedQuery = datastore.prepare(q);
@@ -51,7 +53,6 @@ public class GetUsersServlet extends HttpServlet {
 		for (Entity result : preparedQuery.asIterable()) {
 			if (!first) {
 				builder.append("@");
-
 			}
 			first = false;
 			builder.append(result.getKey().getName());
