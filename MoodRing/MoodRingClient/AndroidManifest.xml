@@ -22,6 +22,15 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <!-- Keeps the processor from sleeping when a message is received. -->
     <uses-permission android:name="android.permission.WAKE_LOCK" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+    <uses-permission android:name="android.permission.READ_CALENDAR" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_CALL_LOG" />
+    
 
     <application
         android:allowBackup="true"
@@ -39,6 +48,18 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.medialab.moodring.client.UserListActivity"
+            android:label="@string/title_activity_user_list"
+            android:parentActivityName="com.medialab.moodring.client.MainActivity"
+            android:windowSoftInputMode="stateHidden" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.medialab.moodring.client.MainActivity" />
+        </activity>
+
+        <service android:name="com.medialab.moodring.client.GCMIntentService" />
+        <service android:name="com.medialab.moodring.client.DataCollectionService" />
 
         <receiver
             android:name="com.google.android.gcm.GCMBroadcastReceiver"
@@ -50,18 +71,6 @@
                 <category android:name="com.medialab.moodring.client" />
             </intent-filter>
         </receiver>
-
-        <service android:name="com.medialab.moodring.client.GCMIntentService" />
-
-        <activity
-            android:name="com.medialab.moodring.client.UserListActivity"
-            android:label="@string/title_activity_user_list"
-            android:windowSoftInputMode="stateHidden"
-            android:parentActivityName="com.medialab.moodring.client.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="com.medialab.moodring.client.MainActivity" />
-        </activity>
     </application>
 
 </manifest>

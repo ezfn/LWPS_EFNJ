@@ -1,6 +1,8 @@
 package com.medialab.moodring.client;
 
 import android.app.Activity;
+import android.app.ActivityManager;
+import android.app.ActivityManager.RunningServiceInfo;
 import android.content.Intent;
 import android.content.SharedPreferences.Editor;
 import android.os.Bundle;
@@ -19,6 +21,9 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		if (!isMyServiceRunning())
+			startService(new Intent(this, DataCollectionService.class));
+		
 		onNewIntent(getIntent());
 	}
 
@@ -83,6 +88,16 @@ public class MainActivity extends Activity {
 				editor.commit();
 			}
 		});
+	}
+	
+	private boolean isMyServiceRunning() {
+	    ActivityManager manager = (ActivityManager) getSystemService(MainActivity.ACTIVITY_SERVICE);
+	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+	        if (DataCollectionService.class.getName().equals(service.service.getClassName())) {
+	            return true;
+	        }
+	    }
+	    return false;
 	}
 
 
