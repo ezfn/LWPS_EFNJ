@@ -2,7 +2,6 @@ package com.medialab.moodring.client;
 
 import android.app.Activity;
 import android.os.Bundle;
-import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -35,7 +34,6 @@ public class UserListActivity extends Activity {
 
 			@Override
 			public void run() {
-				//Debug.waitForDebugger();
 				final String[] users = ServerCalls.getUsers();
 
 				runOnUiThread(new Runnable() {
