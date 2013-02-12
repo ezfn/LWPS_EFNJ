@@ -18,7 +18,6 @@ import android.provider.CallLog;
 public class LogMethods {
 	static String SDCARD = Environment.getExternalStorageDirectory().getAbsolutePath();
 	
-	
 
 	public static void printToLog(String text, String FILENAME, boolean do_append)
 	{       
@@ -192,7 +191,7 @@ public class LogMethods {
 	}
 
 	/*Fields go in conjunction with prepareGpsFile*/
-	public static void gpsLogger (Location location, String FILENAME){
+	public static void logGps (Location location, String FILENAME){
 
 		printToLog(location.getTime() + "," + location.getAltitude() + "," + location.getLongitude() + "," + location.getAccuracy() ,FILENAME,true);
 	}
@@ -204,4 +203,16 @@ public class LogMethods {
 		if (!gpsfile.exists())
 			printToLog("\"TIME\",\"latitude\",\"longitude\",\"accuracy\"",  FILENAME, false);
 	}
+	
+	public static void logMsg (MsgPacket msgpacket, String FILENAME){
+
+		printToLog(msgpacket.Time + "," + msgpacket.Sender + "," + msgpacket.Msg, FILENAME ,true);
+	}
+	
+	public static void prepareMsgFile (String FILENAME){
+		File msgfile = new File(SDCARD + "/" + FILENAME);
+		if (!msgfile.exists())
+			printToLog("\"TIME\",\"sender\",\"message\"", FILENAME, false);
+	}
+	
 }

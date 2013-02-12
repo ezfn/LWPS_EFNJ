@@ -1,6 +1,7 @@
 package com.medialab.moodring.client;
 
 import java.io.InputStream;
+import java.util.Date;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -48,8 +49,10 @@ public class ServerCalls {
 	}
 
 	public static String sendMessage(String to, String from, String body) {
+		
+		long time = new Date().getTime();
 		try {
-			String url = HOST + "/sendmsg?to=" + to + "&from=" + from + "&body=" + body;
+			String url = HOST + "/sendmsg?to=" + to + "&from=" + from + "&body=" + body + "&time=" + time;
 
 			HttpPost httpPost = new HttpPost(url);
 			HttpClient httpclient = new DefaultHttpClient();

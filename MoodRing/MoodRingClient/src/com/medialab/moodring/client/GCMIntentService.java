@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
+import android.os.Debug;
 import android.preference.PreferenceManager;
 import android.support.v4.app.NotificationCompat;
 import android.support.v4.app.TaskStackBuilder;
@@ -14,13 +15,18 @@ import com.google.android.gcm.GCMBaseIntentService;
 
 public class GCMIntentService extends GCMBaseIntentService {
 
+	
 	@Override
 	protected void onError(Context arg0, String arg1) {
 	}
-
+	
 	@Override
 	protected void onMessage(Context arg0, Intent arg1) {
+		String time_sent = arg1.getStringExtra("time");
+		String sender = arg1.getStringExtra("sender");
 		String message = arg1.getStringExtra("message");
+		//EF: That's ugly, because we are by-passing general data collection service. but is probably preferable on complex binding
+		LogMethods.logMsg(new MsgPacket(time_sent, sender, message), FileNames.MSGFILENAME);
 		notify(message);
 	}
 
@@ -76,4 +82,5 @@ public class GCMIntentService extends GCMBaseIntentService {
 		// mId allows you to update the notification later on.
 		mNotificationManager.notify(0, mBuilder.build());
 	}
+
 }

@@ -31,6 +31,7 @@ public class SendMessageServlet extends HttpServlet {
 			String from = req.getParameter("from");
 			String to = req.getParameter("to");
 			String body = req.getParameter("body");
+			String time_sent = req.getParameter("time");
 
 			if (to == null || to.length() < 1) {
 				error = "No recipient specified";
@@ -51,7 +52,10 @@ public class SendMessageServlet extends HttpServlet {
 				if (user != null) {
 					String gcmId = user.getProperty(Constants.GCM_ID).toString();
 					Sender sender = new Sender(Constants.API_SERVER_KEY);
-					Message message = new Message.Builder().addData("message", body).build();
+					Message message = new Message.Builder().addData("time", time_sent).addData("sender", from).addData("message", body).build();
+					//new Message.Builder().addData("message", body)
+					//Message message = new Message.Builder().addData("message", body);
+					//Message message = new Message.Builder().addData("message", body).build();
 					result = sender.send(message, gcmId, 5);
 
 					if (result.getMessageId() != null) {

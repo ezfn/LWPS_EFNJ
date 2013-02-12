@@ -12,29 +12,33 @@ import com.medialab.moodring.client.GPSTracker.locationChangedListener;
 
 public class DataCollectionService extends Service {
 	
-	private String GPSFILENAME = "gpslogWWW.csv";
-	private String CLGFILENAME = "calllogWWW.csv";
-	private String SMSFILENAME = "smslogWWW.csv";
-	private String CLDFILENAME = "calendarWWW.csv";
+
 	private GPSTracker gpsTracker;
 	private locationChangedListener locationListener = new locationChangedListener() {
 		
 		public void getNewLocation(Location new_location) {
-			LogMethods.gpsLogger(new_location,  GPSFILENAME);	
+			LogMethods.logGps(new_location,  FileNames.GPSFILENAME);	
 		}
 	};
-
+	
 	@Override
 	public IBinder onBind(Intent intent) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
+	@Override
+	public void onCreate() {
+		super.onCreate();
+		updateLogs();
+		gpsTracker = new GPSTracker(this, locationListener);
+		LogMethods.prepareGpsFile(FileNames.GPSFILENAME);
+		LogMethods.prepareMsgFile(FileNames.MSGFILENAME);
+	}
+	
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		updateLogs();
-		LogMethods.prepareGpsFile(GPSFILENAME);
-		gpsTracker = new GPSTracker(this, locationListener);
+		
 	    // We want this service to continue running until it is explicitly
 	    // stopped, so return sticky.
 	    return START_STICKY;
@@ -44,9 +48,9 @@ public class DataCollectionService extends Service {
 	private void updateLogs(){
 		
 		ContentResolver cr =getContentResolver();
-		LogMethods.dumpCalls(cr, CLGFILENAME);
-		LogMethods.dumpSms(cr, SMSFILENAME);
-		LogMethods.dumpCalender(cr, CLDFILENAME);
+		LogMethods.dumpCalls(cr, FileNames.CLGFILENAME);
+		LogMethods.dumpSms(cr, FileNames.SMSFILENAME);
+		LogMethods.dumpCalender(cr, FileNames.CLDFILENAME);
 	}
 	
 

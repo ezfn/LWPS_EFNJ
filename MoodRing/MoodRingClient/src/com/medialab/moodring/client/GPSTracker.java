@@ -185,7 +185,7 @@ public class GPSTracker extends Service implements LocationListener {
 	
 	@Override
 	public void onLocationChanged(Location location) {
-		extListener.getNewLocation(location);
+		extListener.getNewLocation(location);//TODO: change this to intent based, since both are services
 	}
 
 	@Override
