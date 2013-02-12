@@ -21,9 +21,8 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		if (!isMyServiceRunning())
+		if (!isDataServiceRunning())
 			startService(new Intent(this, DataCollectionService.class));
-		
 		onNewIntent(getIntent());
 	}
 
@@ -90,7 +89,7 @@ public class MainActivity extends Activity {
 		});
 	}
 	
-	private boolean isMyServiceRunning() {
+	private boolean isDataServiceRunning() {
 	    ActivityManager manager = (ActivityManager) getSystemService(MainActivity.ACTIVITY_SERVICE);
 	    for (RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
 	        if (DataCollectionService.class.getName().equals(service.service.getClassName())) {

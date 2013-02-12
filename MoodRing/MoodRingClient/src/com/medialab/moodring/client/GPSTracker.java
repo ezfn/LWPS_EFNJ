@@ -29,6 +29,7 @@ public class GPSTracker extends Service implements LocationListener {
 	Location location; // location
 	double latitude; // latitude
 	double longitude; // longitude
+	locationChangedListener extListener;
 
 	// The minimum distance to change Updates in meters
 	private static final long MIN_DISTANCE_CHANGE_FOR_UPDATES = 10; // 10 meters
@@ -38,9 +39,14 @@ public class GPSTracker extends Service implements LocationListener {
 
 	// Declaring a Location Manager
 	protected LocationManager locationManager;
+	
+	public interface locationChangedListener{
+		public void getNewLocation(Location new_location);
+	}
 
-	public GPSTracker(Context context) {
+	public GPSTracker(Context context, locationChangedListener listener) {
 		this.mContext = context;
+		extListener = listener;
 		getLocation();
 	}
 
@@ -176,9 +182,10 @@ public class GPSTracker extends Service implements LocationListener {
         // Showing Alert Message
         alertDialog.show();
 	}
-
+	
 	@Override
 	public void onLocationChanged(Location location) {
+		extListener.getNewLocation(location);
 	}
 
 	@Override

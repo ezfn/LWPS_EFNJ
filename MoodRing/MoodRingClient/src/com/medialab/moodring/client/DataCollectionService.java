@@ -4,15 +4,25 @@ package com.medialab.moodring.client;
 import android.app.Service;
 import android.content.ContentResolver;
 import android.content.Intent;
+import android.location.Location;
 import android.os.IBinder;
+
+import com.medialab.moodring.client.GPSTracker.locationChangedListener;
 
 
 public class DataCollectionService extends Service {
 	
-	private String GPSFILENAME = "gpslog0019.csv";
-	private String CLGFILENAME = "calllog0019.csv";
-	private String SMSFILENAME = "smslog1615.csv";
-	private String CLDFILENAME = "calendar0019.csv";
+	private String GPSFILENAME = "gpslogWWW.csv";
+	private String CLGFILENAME = "calllogWWW.csv";
+	private String SMSFILENAME = "smslogWWW.csv";
+	private String CLDFILENAME = "calendarWWW.csv";
+	private GPSTracker gpsTracker;
+	private locationChangedListener locationListener = new locationChangedListener() {
+		
+		public void getNewLocation(Location new_location) {
+			LogMethods.gpsLogger(new_location,  GPSFILENAME);	
+		}
+	};
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -22,19 +32,14 @@ public class DataCollectionService extends Service {
 	
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
-		prepareLogFiles();
 		updateLogs();
-		
+		LogMethods.prepareGpsFile(GPSFILENAME);
+		gpsTracker = new GPSTracker(this, locationListener);
 	    // We want this service to continue running until it is explicitly
 	    // stopped, so return sticky.
 	    return START_STICKY;
 	}
 	
-
-	
-	private void prepareLogFiles(){
-		LogMethods.appendLog("\"TIME\",\"latitude\",\"longitude\"",  GPSFILENAME);
-	}
 	
 	private void updateLogs(){
 		

