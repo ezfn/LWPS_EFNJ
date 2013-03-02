@@ -30,14 +30,17 @@
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.READ_CALL_LOG" />
-    
 
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
-        <activity android:name="com.medialab.moodring.client.GcmOnMessageActivity" />
+        <activity
+            android:name="com.medialab.moodring.client.GcmOnMessageActivity"
+            android:label="@string/title_activity_email" >
+        </activity>
+        <activity android:name="com.medialab.moodring.client.EmailSenderActivity" />
         <activity
             android:name="com.medialab.moodring.client.MainActivity"
             android:label="@string/app_name"

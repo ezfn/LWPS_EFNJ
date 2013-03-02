@@ -11,13 +11,16 @@ import android.content.ContentResolver;
 import android.database.Cursor;
 import android.location.Location;
 import android.net.Uri;
+import android.os.Debug;
 import android.os.Environment;
 import android.provider.CalendarContract;
 import android.provider.CallLog;
+import android.provider.ContactsContract;
+import android.provider.ContactsContract.PhoneLookup;
 
 public class LogMethods {
 	static String SDCARD = Environment.getExternalStorageDirectory().getAbsolutePath();
-	
+
 
 	public static void printToLog(String text, String FILENAME, boolean do_append)
 	{       
@@ -93,8 +96,6 @@ public class LogMethods {
 
 				/*Contact Name*/  
 				String name = messagesCursor.getString(messagesCursor.getColumnIndex("person"));
-
-
 				toPrint += "\""+name+"\"," + "\""+number+"\"," + type + "," + date + "," + "\""+msgBody+"\"" + "\n";
 
 			}
@@ -103,116 +104,132 @@ public class LogMethods {
 
 		}
 	}
-
-	public static void dumpCalls (ContentResolver cr, String FILENAME){
-		String[] strFields = {
-				CallLog.Calls.CACHED_NAME,
-				CallLog.Calls.NUMBER,
-				CallLog.Calls.TYPE,
-				CallLog.Calls.DATE,
-				CallLog.Calls.DURATION,
-		};
-		String strOrder = android.provider.CallLog.Calls.DATE + " DESC"; 
-
-		Cursor mCallCursor = cr.query(
-				android.provider.CallLog.Calls.CONTENT_URI,
-				strFields,
-				null,
-				null,
-				strOrder
-				);
-		String toPrint = new String();
-		for (String col_name:strFields){
-			toPrint += "\"" + col_name + "\",";
-		}
-		toPrint += "\n";		
-		if (mCallCursor != null) {
-			/*Looping through the results*/
-			while (mCallCursor.moveToNext()) 
-			{
-				/*Date*/
-				long dateTimeMillis = mCallCursor.getLong(mCallCursor.getColumnIndex(CallLog.Calls.DATE));
-
-				/*Call Type – Incoming, Outgoing, Missed*/
-				int callType = mCallCursor.getInt(mCallCursor.getColumnIndex(CallLog.Calls.TYPE));
-
-				/*Contact Name*/  
-				String name = mCallCursor.getString(mCallCursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
-
-				/*Contact Number*/
-				String number = mCallCursor.getString(mCallCursor.getColumnIndex(CallLog.Calls.NUMBER));
-
-				/*Duration*/
-				long durationMillis = mCallCursor.getLong(mCallCursor.getColumnIndex(CallLog.Calls.DURATION));
-
-				toPrint += "\""+name+"\"," + "\""+number+"\"," + String.valueOf(callType) + "," + String.valueOf(dateTimeMillis) + "," + String.valueOf(durationMillis) +  "\n";
-
-			}
-			printToLog(toPrint ,FILENAME,false);
-			mCallCursor.close();
-		}
-	}
-
-	@SuppressLint("NewApi")
-	public static void dumpCalender (ContentResolver cr, String FILENAME){
-		String[] strFields = {
-				CalendarContract.Instances.BEGIN,
-				CalendarContract.Instances.END,
-				CalendarContract.Instances.EVENT_ID,
-		};
-		Date date=new Date() ;
-		long now = date.getTime();
-		Cursor mCalendarCursor = android.provider.CalendarContract.Instances.query(cr, strFields, 0, now + 999999999);
-		String toPrint = new String();
-		for (String col_name:strFields){
-			toPrint += "\"" + col_name + "\",";
-		}
-		toPrint += "\n";
-		if (mCalendarCursor != null) {
-			/*Looping through the results*/
-			while (mCalendarCursor.moveToNext()) 
-			{
-				/*Begin*/
-				String begin = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.BEGIN));
-
-				/*End*/
-				String end = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.END));
-
-				/*End*/
-				String event_id = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.EVENT_ID));
-
-
-				toPrint += begin + "," + end + "," + event_id  + "\n";
-
-			}
-			printToLog(toPrint ,FILENAME, false);
-			mCalendarCursor.close();
-		}
-	}
-
-	/*Fields go in conjunction with prepareGpsFile*/
-	public static void logGps (Location location, String FILENAME){
-
-		printToLog(location.getTime() + "," + location.getAltitude() + "," + location.getLongitude() + "," + location.getAccuracy() ,FILENAME,true);
-	}
 	
-	/*Fields go in conjunction with gpsLogger*/
-	public static void prepareGpsFile (String FILENAME){
+	//TODO: doesn't work!
+	private static String contactNameFromId(String id, ContentResolver cr){
+		// Build the Uri to query to table
+		Uri personUri = Uri.withAppendedPath( ContactsContract.PhoneLookup.CONTENT_FILTER_URI,  Uri.encode(id));
+		Cursor cur = cr.query(personUri, new String[] { PhoneLookup.DISPLAY_NAME }, null, null, null );  
 
-		File gpsfile = new File(SDCARD + "/" + FILENAME);
-		if (!gpsfile.exists())
-			printToLog("\"TIME\",\"latitude\",\"longitude\",\"accuracy\"",  FILENAME, false);
-	}
-	
-	public static void logMsg (MsgPacket msgpacket, String FILENAME){
+		String PersonName = "NA";
+		if( cur.moveToFirst() ) {  
+		             int nameIndex = cur.getColumnIndex(PhoneLookup.DISPLAY_NAME);  
 
-		printToLog(msgpacket.Time + "," + msgpacket.Sender + "," + msgpacket.Msg, FILENAME ,true);
+		             PersonName  = cur.getString(nameIndex); 
+		}
+		cur.close();
+		return PersonName;
+}
+
+public static void dumpCalls (ContentResolver cr, String FILENAME){
+	String[] strFields = {
+			CallLog.Calls.CACHED_NAME,
+			CallLog.Calls.NUMBER,
+			CallLog.Calls.TYPE,
+			CallLog.Calls.DATE,
+			CallLog.Calls.DURATION,
+	};
+	String strOrder = android.provider.CallLog.Calls.DATE + " DESC"; 
+
+	Cursor mCallCursor = cr.query(
+			android.provider.CallLog.Calls.CONTENT_URI,
+			strFields,
+			null,
+			null,
+			strOrder
+			);
+	String toPrint = new String();
+	for (String col_name:strFields){
+		toPrint += "\"" + col_name + "\",";
 	}
-	
-	public static void prepareMsgFile (String FILENAME){
-		File msgfile = new File(SDCARD + "/" + FILENAME);
-		if (!msgfile.exists())
-			printToLog("\"TIME\",\"sender\",\"message\"", FILENAME, false);
+	toPrint += "\n";		
+	if (mCallCursor != null) {
+		/*Looping through the results*/
+		while (mCallCursor.moveToNext()) 
+		{
+			/*Date*/
+			long dateTimeMillis = mCallCursor.getLong(mCallCursor.getColumnIndex(CallLog.Calls.DATE));
+
+			/*Call Type – Incoming, Outgoing, Missed*/
+			int callType = mCallCursor.getInt(mCallCursor.getColumnIndex(CallLog.Calls.TYPE));
+
+			/*Contact Name*/  
+			String name = mCallCursor.getString(mCallCursor.getColumnIndex(CallLog.Calls.CACHED_NAME));
+
+			/*Contact Number*/
+			String number = mCallCursor.getString(mCallCursor.getColumnIndex(CallLog.Calls.NUMBER));
+
+			/*Duration*/
+			long durationMillis = mCallCursor.getLong(mCallCursor.getColumnIndex(CallLog.Calls.DURATION));
+
+			toPrint += "\""+name+"\"," + "\""+number+"\"," + String.valueOf(callType) + "," + String.valueOf(dateTimeMillis) + "," + String.valueOf(durationMillis) +  "\n";
+
+		}
+		printToLog(toPrint ,FILENAME,false);
+		mCallCursor.close();
 	}
-	
+}
+
+@SuppressLint("NewApi")
+public static void dumpCalender (ContentResolver cr, String FILENAME){
+	String[] strFields = {
+			CalendarContract.Instances.BEGIN,
+			CalendarContract.Instances.END,
+			CalendarContract.Instances.EVENT_ID,
+	};
+	Date date=new Date() ;
+	long now = date.getTime();
+	Cursor mCalendarCursor = android.provider.CalendarContract.Instances.query(cr, strFields, 0, now + 999999999);
+	String toPrint = new String();
+	for (String col_name:strFields){
+		toPrint += "\"" + col_name + "\",";
+	}
+	toPrint += "\n";
+	if (mCalendarCursor != null) {
+		/*Looping through the results*/
+		while (mCalendarCursor.moveToNext()) 
+		{
+			/*Begin*/
+			String begin = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.BEGIN));
+
+			/*End*/
+			String end = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.END));
+
+			/*End*/
+			String event_id = mCalendarCursor.getString(mCalendarCursor.getColumnIndex(CalendarContract.Instances.EVENT_ID));
+
+
+			toPrint += begin + "," + end + "," + event_id  + "\n";
+
+		}
+		printToLog(toPrint ,FILENAME, false);
+		mCalendarCursor.close();
+	}
+}
+
+/*Fields go in conjunction with prepareGpsFile*/
+public static void logGps (Location location, String FILENAME){
+
+	printToLog(location.getTime() + "," + location.getAltitude() + "," + location.getLongitude() + "," + location.getAccuracy() ,FILENAME,true);
+}
+
+/*Fields go in conjunction with gpsLogger*/
+public static void prepareGpsFile (String FILENAME){
+
+	File gpsfile = new File(SDCARD + "/" + FILENAME);
+	if (!gpsfile.exists())
+		printToLog("\"TIME\",\"latitude\",\"longitude\",\"accuracy\"",  FILENAME, false);
+}
+
+public static void logMsg (MsgPacket msgpacket, String FILENAME){
+
+	printToLog(msgpacket.Time + "," + msgpacket.Sender + "," + msgpacket.Msg, FILENAME ,true);
+}
+
+public static void prepareMsgFile (String FILENAME){
+	File msgfile = new File(SDCARD + "/" + FILENAME);
+	if (!msgfile.exists())
+		printToLog("\"TIME\",\"sender\",\"message\"", FILENAME, false);
+}
+
 }
