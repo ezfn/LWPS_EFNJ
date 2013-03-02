@@ -13,6 +13,7 @@ gen/
 *~.nib
 local.properties
 .loadpath
+org.eclipse.jdt.core.prefs
 
 # External tool builders
 .externalToolBuilders/
