@@ -55,7 +55,7 @@ public class UserListActivity extends Activity {
 										
 										new Thread(new Runnable() {
 											public void run() {
-												String res = ServerCalls.sendMessage(selected, getCurrentUserId(), Integer.toString(which));
+												String res = ServerCalls.sendMessage(selected, getCurrentUserId(), Integer.toString(which+1));
 												System.out.println(res);
 											}
 										}).start();
