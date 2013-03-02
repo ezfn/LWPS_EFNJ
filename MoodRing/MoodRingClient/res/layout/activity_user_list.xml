@@ -15,7 +15,8 @@
         android:id="@+id/textview_selected_to"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom" />
+        android:layout_gravity="bottom"
+        android:visibility="gone" />
 
    <EditText
         android:id="@+id/edittext_message"
@@ -23,7 +24,8 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:hint="Type message"
-        android:singleLine="true" >
+        android:singleLine="true"
+        android:visibility="gone" >
     </EditText>
 
     <Button
@@ -31,6 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center|center_vertical"
-        android:text="Send" />
+        android:text="Send"
+        android:visibility="gone" />
 
 </LinearLayout>

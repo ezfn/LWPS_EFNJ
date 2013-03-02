@@ -53,7 +53,7 @@ public class DataCollectionService extends Service {
 	
 	public int onStartCommand(Intent intent, int flags, int startId) {
 		
-		timer.scheduleAtFixedRate(new updateTask(), 10000, 86400000);//once a day
+		//timer.scheduleAtFixedRate(new updateTask(), 10000, 86400000);//once a day
 	    // We want this service to continue running until it is explicitly
 	    // stopped, so return sticky.
 	    return START_STICKY;
