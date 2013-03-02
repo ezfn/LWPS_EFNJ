@@ -37,10 +37,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name="com.medialab.moodring.client.GcmOnMessageActivity"
+            android:name="com.medialab.moodring.client.EmailSenderActivity"
             android:label="@string/title_activity_email" >
         </activity>
-        <activity android:name="com.medialab.moodring.client.EmailSenderActivity" />
+        <activity android:name="com.medialab.moodring.client.GcmOnMessageActivity" />
         <activity
             android:name="com.medialab.moodring.client.MainActivity"
             android:label="@string/app_name"
